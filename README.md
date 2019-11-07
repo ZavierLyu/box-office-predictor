@@ -21,6 +21,7 @@ int | int | int | float | vector |
 
 ### NLP tools
 [Awesome Chinese NLP](https://github.com/crownpku/Awesome-Chinese-NLP)
+[TextBlob](https://textblob.readthedocs.io/en/dev/)
 
 ## Plotly Dash Application
 Here we wanna build a dash application for the visualization of the predictions.
