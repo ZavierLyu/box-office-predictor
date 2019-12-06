@@ -44,7 +44,7 @@ jupyter notebook
 pipenv install <package>
 ```
 
-### Materials
+## Materials
 - [Dash Tutorial](https://pythonprogramming.net/data-visualization-application-dash-python-tutorial-introduction/)
 - [Dash Official Doc](https://dash.plot.ly/)
-
+- [Python Machine Learning GitHub Repository](https://github.com/ageron/handson-ml)
