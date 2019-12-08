@@ -1,5 +1,7 @@
 # jupyter notebook
 .idea/
+.vscode/
+
 
 *.py
 !application.py
