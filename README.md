@@ -48,3 +48,9 @@ pipenv install <package>
 - [Dash Tutorial](https://pythonprogramming.net/data-visualization-application-dash-python-tutorial-introduction/)
 - [Dash Official Doc](https://dash.plot.ly/)
 - [Python Machine Learning GitHub Repository](https://github.com/ageron/handson-ml)
+- [Social Sentiment](https://github.com/Sentdex/socialsentiment)
+
+## TODO
+- [ ] Predict the box office in real time
+- [ ] Train new model using new dataset.
+- [ ] Add director sentiment codes.
