@@ -1,11 +1,11 @@
-movie_title,number_of_voted_user,number_of _user_for_reviews,number_of_critics,log_budget,country,year
-The Aeronauts,1925,55,75,17.50439001,USA,2019
-Playmobil: The Movie,1043,33,49,18.13299867,France,2019
-A Beautiful Day in the  Neighborhood,6299,160,123,15.20180492,USA,2019
-21 Bridges,4223,114,64,17.31201812,USA,2019
-Playing with Fire,1731,74,22,17.53256635,USA,2019
-Midway,14485,410,123,18.42068074,USA,2019
-Joker,505653,8117,583,17.82284374,USA,2019
-Frozen 2,27022,535,202,20.42494129,USA,2019
-Knives Out,31495,485,270,17.50439001,USA,2019
-Ford v Ferrari,50231,569,253,18.39638805,France,2019
+movie title,budget,country,genres,imdb_score,sentiment_comment,log_budget,number_of_voted_user,number_of _user_for_reviews,number_of_critics,year
+Last Christmas,"30,000,000.00",USA UK,Comedy,6.6,0.251901918,17.21670794,12440,348,130,2019
+Playmobil: The Movie,"75,000,000.00",France USA,Animation,4.5,0.152087048,18.13299867,1043,33,49,2019
+A Beautiful Day in the  Neighborhood,"4,000,000.00",China USA,Biography,7.9,0.251703758,15.20180492,6299,160,123,2019
+21 Bridges,"33,000,000.00",USA,Action ,6.6,0.209004584,17.31201812,4223,114,64,2019
+Playing with Fire,"41,143,082.00",USA,Comedy,4.6,0.111109971,17.53256635,1731,74,22,2019
+Midway,"100,000,000.00",USA China,Action ,6.9,0.237651219,18.42068074,14485,410,123,2019
+Joker,"55,000,000.00",USA Canada,Crime,8.7,0.203816406,17.82284374,505653,8117,583,2019
+Frozen 2,"742,060,467.00",USA,Animation,7.3,0.160096735,20.42494129,27022,535,202,2019
+Knives Out,"40,000,000.00",USA,Comedy,8.1,0.144948188,17.50439001,31495,485,270,2019
+Ford v Ferrari,"97,600,000.00",France USA ,Action ,8.3,0.236837384,18.39638805,50231,569,253,2019
