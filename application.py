@@ -479,4 +479,4 @@ def update_wordcloud_plot(value_drop):
 application = APP.server
 
 if __name__ == "__main__":
-    application.run(debug=True, port=8080)
+    application.run(debug=False, port=8080)
