@@ -131,6 +131,7 @@ Werkzeug = "==0.15.5"
 prometheus_client = "==0.7.1"
 bs4 = "*"
 lxml = "==4.4.2"
+textblob = "*"
 
 [requires]
 python_version = "3.6"

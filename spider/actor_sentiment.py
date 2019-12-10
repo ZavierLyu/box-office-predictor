@@ -289,7 +289,7 @@ class TwitterCrawler:
                     self.end_reason = "finish condition met"
                 else:
                     self.end_reason = "terminated for some unintended reason"
-                print("Crawl ended successfuly with following status:")
+                print("Crawl ended successfully with following status:")
                 self.dump()
                 break
 
@@ -374,7 +374,7 @@ def main(input_path, output_path):
                 continue
             savePath = os.path.join(output_path, "{}.csv".format(actor[i]))
             if not (os.path.isfile(savePath)):
-                crawler = TwitterCrawler(query=query, output_file=savePath, max_num=500)
+                crawler = TwitterCrawler(query=query, output_file=savePath, max_num=100)
                 crawler.crawl()
                 sen_data = 0
             # try:
@@ -403,3 +403,4 @@ def main(input_path, output_path):
 
 if __name__ == "__main__":
     df = main("./movie_for_predict.csv", "./DataCache/")
+    print(df)

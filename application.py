@@ -22,10 +22,13 @@ from collections import deque
 import datetime as dt
 import random
 import joblib
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+from spider import actor_sentiment
 
 # random.seed(42)
-X = deque(maxlen=50)
-Y = deque(maxlen=50)
 
 DATA_PATH = pathlib.Path(__file__).parent.resolve()
 EXTERNAL_STYLESHEETS = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
@@ -33,8 +36,9 @@ FILENAME = "data/movie_for_predict.csv"
 PLOTLY_LOGO = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
 GLOBAL_DF = pd.read_csv(DATA_PATH.joinpath(FILENAME), header=0)
 
-RND_FOREST_MODEL_PATH = './train/model_instance/log_gross.pkl'
+RND_FOREST_MODEL_PATH = './train/model_instance/rnd_forest_log10_gross.pkl'
 RND_FOREST_MODEL = joblib.load(RND_FOREST_MODEL_PATH)
+PIPELINE_MODEL = joblib.load('./train/model_instance/pipeline.pkl')
 
 """
 #  Somewhat helpful functions
@@ -48,22 +52,22 @@ def get_complaint_count_by_company(dataframe, attribute):
     counts = company_counts.tolist()
     return values, counts
 
-def pipeline(movies_tr):
-    cat_attribs = ["genres", "country"]
-    num_attribs = list(movies_tr.drop(cat_attribs, axis=1))
+def pipeline_transform(movies_tr):
+
+    # cat_attribs = ["genres", "country"]
+    # num_attribs = list(movies_tr.drop(cat_attribs, axis=1))
     
-    print("num\n", num_attribs)
+    # print("num\n", num_attribs)
 
-    num_pipeline = Pipeline([
-        ('std_scaler', StandardScaler()),
-    ])
+    # num_pipeline = Pipeline([
+    #     ('std_scaler', StandardScaler()),
+    # ])
 
-    full_pipeline = ColumnTransformer([
-        ("num", num_pipeline, num_attribs),
-        ("cat", OneHotEncoder(), cat_attribs),
-    ])
-
-    movies_tr_preprocessing = full_pipeline.fit_transform(movies_tr) # Using the full data rather than train data
+    # full_pipeline = ColumnTransformer([
+    #     ("num", num_pipeline, num_attribs),
+    #     ("cat", OneHotEncoder(), cat_attribs),
+    # ])
+    movies_tr_preprocessing = PIPELINE_MODEL.transform(movies_tr)
     movies_tr_prepared = movies_tr_preprocessing
     return movies_tr_prepared
 
@@ -72,14 +76,29 @@ def get_value_by_attribute(GLOBAL_DF, attribute):
     col_list = col.tolist()
     return sorted(list(set(col_list)))
 
-def test_df_clean(test_df):
-    
+def test_df_polish(test_df):
+    test_df_ = test_df[["budget","country","genres",
+        "imdb_score","sentiment_comment","number_of_voted_user",
+        "number_of_user_for_reviews","number_of_critics"
+    ]].copy()
+    actor_senti_df = actor_sentiment.main(FILENAME, "./DataCache/")
+    test_df_["senti_actor"] = actor_senti_df["sentiment"]
+    test_df_.rename(columns={'sentiment_comment':'senti_comment', "number_of_voted_user":"num_voted_users", 
+        "number_of_user_for_reviews":"num_user_for_reviews","number_of_critics":"num_critic_for_reviews"}, inplace=True)
+    test_df_["log_budget"] = np.log10(test_df_["budget"])
+    test_df_.drop("budget", axis=1, inplace=True)
+    return test_df_
+
 
 def predict(test_df, model):
     # TODO
+    predict_df = test_df_polish(test_df)
     # predictions = np.random.rand(10)
-    test_prepared = pipeline(test_df)
-    predictions = 
+    predict_prepared = pipeline_transform(predict_df)
+    # print("*"*30)
+    # print(predict_df)
+    predictions = model.predict(predict_prepared)
+    # print(predictions)
     predict_df = pd.DataFrame(data={"prediction":predictions})
     predict_df['movie_title'] = test_df["movie_title"]
     return predict_df
@@ -245,6 +264,9 @@ def plotly_wordcloud(data_frame):
 
 MOVIES_NAMES = get_value_by_attribute(GLOBAL_DF, "movie_title")
 MOVIES_DROPDOWN = make_options_bank_drop(MOVIES_NAMES)
+DRAW_BOX = {}
+for i in MOVIES_NAMES:
+    DRAW_BOX[i] = [deque(maxlen=25), deque(maxlen=25)]
 
 """
 #  Page layout and contents
@@ -287,7 +309,7 @@ TOP_BANKS_PLOT = [
             dcc.Graph(id="bank-sample"),
             dcc.Interval(
                 id='predict-update',
-                interval=2*1000,  # in milliseconds
+                interval=5*1000,  # in milliseconds
             )
         ]
     ),
@@ -394,27 +416,38 @@ For live predictions
 def update_bank_sample_plot(movie_name, intervals):
     """ TODO """
     print("redrawing bank-sample...")
-    prediction_df = predict(GLOBAL_DF, " ")
-    prediction = prediction_df[prediction_df["movie title"]==movie_name].iloc[0,0]
-    # print(prediction)
-    # X = deque(maxlen=20)
-    X.append(str(dt.datetime.now()))
-    Y.append(np.round(prediction + random.randint(-2,2), 1))
+    prediction_df = predict(GLOBAL_DF, RND_FOREST_MODEL)
+    prediction_df.reset_index(drop=True, inplace=True)
+    
+    for name in MOVIES_NAMES:
+        prediction = prediction_df[prediction_df["movie_title"]==name].iloc[0,0]
+        DRAW_BOX[name][0].append(str(dt.datetime.now()))
+        DRAW_BOX[name][1].append(np.round(np.power(10,prediction)/(10**6)+(random.random()-0.37)/887, 4))
+
+    X = np.array(list(DRAW_BOX[movie_name][0]))
+    Y = np.array(list(DRAW_BOX[movie_name][1])) 
+
+    # Y = np.round(Y/(10**6), 4)
+    # Y[-1] = np.round(Y[-1] + random.random()-0.4,4)
 
     data = [
         go.Scatter(
-            x=list(X),
-            y=list(Y),
+            x=X,
+            y=Y,
             name='Scatter',
             mode= 'lines+markers'
         )
     ]
     layout = {
-        "autosize": True,
+        "autosize": False,
         # "margin": dict(t=8, b=8, l=35, r=0, pad=4),
         "xaxis": {"showticklabels": True},
-        "title": 'Live Box Office for: "{}" is {}$'.format(movie_name, Y[-1])
+        "title": 'Live Box Office for "{}" is {} million $'.format(movie_name, Y[-1]),
+        "yaxis": dict(range=[np.min(Y)-0.1,np.max(Y)+0.1])
     }
+
+    # layout = go.Layout(yaxis=dict(range=[min(Y),max(Y)]))
+
     print("redrawing bank-sample...done")
     return {"data": data, "layout": layout}
 
