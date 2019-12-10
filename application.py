@@ -15,11 +15,9 @@ import dash_html_components as html
 import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
-from precomputing import add_stopwords
 from dash.dependencies import Output, Input, State
 from dateutil import relativedelta
 from wordcloud import WordCloud, STOPWORDS
-from ldacomplaints import lda_analysis
 from collections import deque
 import datetime as dt
 import random
@@ -59,7 +57,7 @@ def predict(test_df, predictor_path):
     # TODO
     predictions = np.random.rand(10)
     predict_df = pd.DataFrame(data={"prediction":predictions})
-    predict_df['movie title'] = test_df["movie title"]
+    predict_df['movie_title'] = test_df["movie_title"]
     return predict_df
 
 
@@ -221,7 +219,7 @@ def plotly_wordcloud(data_frame):
     return wordcloud_figure_data, frequency_figure_data, treemap_figure
 
 
-MOVIES_NAMES = get_value_by_attribute(GLOBAL_DF, "movie title")
+MOVIES_NAMES = get_value_by_attribute(GLOBAL_DF, "movie_title")
 MOVIES_DROPDOWN = make_options_bank_drop(MOVIES_NAMES)
 
 """
@@ -354,9 +352,8 @@ BODY = dbc.Container(
     className="mt-12",
 )
 
-SERVER = flask.Flask(__name__)
 APP = dash.Dash(__name__, external_stylesheets=[
-                dbc.themes.BOOTSTRAP], server=SERVER)
+                dbc.themes.BOOTSTRAP])
 APP.layout = html.Div(children=[NAVBAR, BODY])
 
 """
@@ -422,5 +419,7 @@ def update_wordcloud_plot(value_drop):
     print("redrawing bank-wordcloud...done")
     return (wordcloud, frequency_figure, treemap)
 
+application = APP.server
+
 if __name__ == "__main__":
-    APP.run_server(debug=True)
+    application.run(debug=True, port=8080)
