@@ -3,8 +3,8 @@
 .vscode/
 virt/
 
-*.py
-!application.py
+/*.py
+/!application.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
