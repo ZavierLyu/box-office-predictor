@@ -29,7 +29,7 @@ from sklearn.preprocessing import OneHotEncoder
 from spider import actor_sentiment
 
 # random.seed(42)
-
+MAX_POINTS = 50
 DATA_PATH = pathlib.Path(__file__).parent.resolve()
 EXTERNAL_STYLESHEETS = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 FILENAME = "data/movie_for_predict.csv"
@@ -266,7 +266,7 @@ MOVIES_NAMES = get_value_by_attribute(GLOBAL_DF, "movie_title")
 MOVIES_DROPDOWN = make_options_bank_drop(MOVIES_NAMES)
 DRAW_BOX = {}
 for i in MOVIES_NAMES:
-    DRAW_BOX[i] = [deque(maxlen=25), deque(maxlen=25)]
+    DRAW_BOX[i] = [deque(maxlen=MAX_POINTS), deque(maxlen=MAX_POINTS)]
 
 """
 #  Page layout and contents
@@ -430,26 +430,40 @@ def update_bank_sample_plot(movie_name, intervals):
     # Y = np.round(Y/(10**6), 4)
     # Y[-1] = np.round(Y[-1] + random.random()-0.4,4)
 
-    data = [
-        go.Scatter(
-            x=X,
-            y=Y,
-            name='Scatter',
-            mode= 'lines+markers'
+    # data = [
+    #     go.Scatter(
+    #         x=X,
+    #         y=Y,
+    #         name='Scatter',
+    #         mode= 'lines+markers'
+    #     )
+    # ]
+    # layout = {
+    #     "autosize": False,
+    #     # "margin": dict(t=8, b=8, l=35, r=0, pad=4),
+    #     "xaxis": {"showticklabels": True},
+    #     "title": 'Live Box Office for "{}" is {} million $'.format(movie_name, Y[-1]),
+    #     "yaxis": dict(range=[np.min(Y)-0.1,np.max(Y)+0.1])
+    # }
+
+    data = go.Scatter(
+        x=list(X),
+        y=list(Y),
+        name='Scatter',
+        mode='lines+markers',
+    )
+
+    layout = go.Layout(
+        xaxis=dict(range=[min(X),max(X)]),
+        yaxis=dict(range=[min(Y),max(Y)]),
+        title='Live Box Office for "{}" is {} million $'.format(movie_name, Y[-1])
         )
-    ]
-    layout = {
-        "autosize": False,
-        # "margin": dict(t=8, b=8, l=35, r=0, pad=4),
-        "xaxis": {"showticklabels": True},
-        "title": 'Live Box Office for "{}" is {} million $'.format(movie_name, Y[-1]),
-        "yaxis": dict(range=[np.min(Y)-0.1,np.max(Y)+0.1])
-    }
 
     # layout = go.Layout(yaxis=dict(range=[min(Y),max(Y)]))
 
     print("redrawing bank-sample...done")
-    return {"data": data, "layout": layout}
+    # return {"data": data, "layout": layout}
+    return {'data': [data],'layout' : layout}
 
 
 '''
