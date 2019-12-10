@@ -129,6 +129,8 @@ PyYAML = "==5.1.2"
 Send2Trash = "==1.5.0"
 Werkzeug = "==0.15.5"
 prometheus_client = "==0.7.1"
+bs4 = "*"
+lxml = "==4.4.2"
 
 [requires]
 python_version = "3.6"

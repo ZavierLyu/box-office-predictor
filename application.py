@@ -21,6 +21,7 @@ from wordcloud import WordCloud, STOPWORDS
 from collections import deque
 import datetime as dt
 import random
+import joblib
 
 # random.seed(42)
 X = deque(maxlen=50)
@@ -31,8 +32,9 @@ EXTERNAL_STYLESHEETS = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 FILENAME = "data/movie_for_predict.csv"
 PLOTLY_LOGO = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
 GLOBAL_DF = pd.read_csv(DATA_PATH.joinpath(FILENAME), header=0)
-# GLOBAL_DF = "Null"
-PREDICTOR = "train/dataset/movie_metadata.csv"
+
+RND_FOREST_MODEL_PATH = './train/model_instance/log_gross.pkl'
+RND_FOREST_MODEL = joblib.load(RND_FOREST_MODEL_PATH)
 
 """
 #  Somewhat helpful functions
@@ -46,16 +48,38 @@ def get_complaint_count_by_company(dataframe, attribute):
     counts = company_counts.tolist()
     return values, counts
 
+def pipeline(movies_tr):
+    cat_attribs = ["genres", "country"]
+    num_attribs = list(movies_tr.drop(cat_attribs, axis=1))
+    
+    print("num\n", num_attribs)
+
+    num_pipeline = Pipeline([
+        ('std_scaler', StandardScaler()),
+    ])
+
+    full_pipeline = ColumnTransformer([
+        ("num", num_pipeline, num_attribs),
+        ("cat", OneHotEncoder(), cat_attribs),
+    ])
+
+    movies_tr_preprocessing = full_pipeline.fit_transform(movies_tr) # Using the full data rather than train data
+    movies_tr_prepared = movies_tr_preprocessing
+    return movies_tr_prepared
 
 def get_value_by_attribute(GLOBAL_DF, attribute):
     col = GLOBAL_DF[attribute]
     col_list = col.tolist()
     return sorted(list(set(col_list)))
 
+def test_df_clean(test_df):
+    
 
-def predict(test_df, predictor_path):
+def predict(test_df, model):
     # TODO
-    predictions = np.random.rand(10)
+    # predictions = np.random.rand(10)
+    test_prepared = pipeline(test_df)
+    predictions = 
     predict_df = pd.DataFrame(data={"prediction":predictions})
     predict_df['movie_title'] = test_df["movie_title"]
     return predict_df
