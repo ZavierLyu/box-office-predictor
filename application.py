@@ -310,7 +310,7 @@ TOP_BANKS_PLOT = [
             dcc.Graph(id="bank-sample"),
             dcc.Interval(
                 id='predict-update',
-                interval=10*1000,  # in milliseconds
+                interval=5*1000,  # in milliseconds
                 n_intervals=0
             )
         ]
