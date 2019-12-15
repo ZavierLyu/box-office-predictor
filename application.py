@@ -398,8 +398,10 @@ BODY = dbc.Container(
     className="mt-12",
 )
 
+server = flask.Flask(__name__)
+
 APP = dash.Dash(__name__, external_stylesheets=[
-                dbc.themes.BOOTSTRAP])
+                dbc.themes.BOOTSTRAP], server=server)
 APP.layout = html.Div(children=[NAVBAR, BODY])
 
 """
@@ -490,7 +492,8 @@ def update_wordcloud_plot(value_drop):
     print("redrawing bank-wordcloud...done")
     return (wordcloud, frequency_figure, treemap)
 
-application = APP.server
+# application = APP.server
 
 if __name__ == "__main__":
-    application.run(debug=False, port=8080)
+    # application.run(debug=False, port=8080)
+    APP.run_server(debug=True)
