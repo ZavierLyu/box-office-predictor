@@ -2,3 +2,4 @@ virt/*
 DataCache/
 .vscode/
 report/
+train/

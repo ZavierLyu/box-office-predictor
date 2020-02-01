@@ -21,12 +21,12 @@ from wordcloud import WordCloud, STOPWORDS
 from collections import deque
 import datetime as dt
 import random
-import joblib
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
-from spider import actor_sentiment
+# import joblib
+# from sklearn.pipeline import Pipeline
+# from sklearn.preprocessing import StandardScaler
+# from sklearn.compose import ColumnTransformer
+# from sklearn.preprocessing import OneHotEncoder
+# from spider import actor_sentiment
 
 # random.seed(42)
 MAX_POINTS = 50
@@ -36,9 +36,10 @@ FILENAME = "data/movie_for_predict.csv"
 PLOTLY_LOGO = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
 GLOBAL_DF = pd.read_csv(DATA_PATH.joinpath(FILENAME), header=0)
 
-RND_FOREST_MODEL_PATH = './train/model_instance/rnd_forest_log10_gross.pkl'
-RND_FOREST_MODEL = joblib.load(RND_FOREST_MODEL_PATH)
-PIPELINE_MODEL = joblib.load('./train/model_instance/pipeline.pkl')
+# RND_FOREST_MODEL_PATH = './train/model_instance/rnd_forest_log10_gross.pkl'
+# RND_FOREST_MODEL = joblib.load(RND_FOREST_MODEL_PATH)
+# PIPELINE_MODEL = joblib.load('./train/model_instance/pipeline.pkl')
+PREDICT_DF = pd.read_csv('data/predict_result.csv')
 
 """
 #  Somewhat helpful functions
@@ -283,6 +284,7 @@ TOP_BANKS_PLOT = [
             dcc.Interval(
                 id='predict-update',
                 interval=5*1000,  # in milliseconds
+                n_intervals=0
             )
         ]
     ),
@@ -391,7 +393,7 @@ For live predictions
 def update_bank_sample_plot(movie_name, intervals):
     """ TODO """
     print("redrawing bank-sample...")
-    prediction_df = predict(GLOBAL_DF, RND_FOREST_MODEL)
+    prediction_df = PREDICT_DF
     prediction_df.reset_index(drop=True, inplace=True)
     
     for name in MOVIES_NAMES:
