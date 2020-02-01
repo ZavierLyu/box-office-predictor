@@ -45,29 +45,7 @@ PREDICT_DF = pd.read_csv('data/predict_result.csv')
 #  Somewhat helpful functions
 """
 
-
-def get_complaint_count_by_company(dataframe, attribute):
-    """ Count the frequency of key words under one specific attribute """
-    company_counts = dataframe[attribute].value_counts()
-    values = company_counts.keys().tolist()
-    counts = company_counts.tolist()
-    return values, counts
-
 def pipeline_transform(movies_tr):
-
-    # cat_attribs = ["genres", "country"]
-    # num_attribs = list(movies_tr.drop(cat_attribs, axis=1))
-    
-    # print("num\n", num_attribs)
-
-    # num_pipeline = Pipeline([
-    #     ('std_scaler', StandardScaler()),
-    # ])
-
-    # full_pipeline = ColumnTransformer([
-    #     ("num", num_pipeline, num_attribs),
-    #     ("cat", OneHotEncoder(), cat_attribs),
-    # ])
     movies_tr_preprocessing = PIPELINE_MODEL.transform(movies_tr)
     movies_tr_prepared = movies_tr_preprocessing
     return movies_tr_prepared
@@ -92,14 +70,9 @@ def test_df_polish(test_df):
 
 
 def predict(test_df, model):
-    # TODO
     predict_df = test_df_polish(test_df)
-    # predictions = np.random.rand(10)
     predict_prepared = pipeline_transform(predict_df)
-    # print("*"*30)
-    # print(predict_df)
     predictions = model.predict(predict_prepared)
-    # print(predictions)
     predict_df = pd.DataFrame(data={"prediction":predictions})
     predict_df['movie_title'] = test_df["movie_title"]
     return predict_df
@@ -400,8 +373,10 @@ BODY = dbc.Container(
     className="mt-12",
 )
 
+server = flask.Flask(__name__)
+
 APP = dash.Dash(__name__, external_stylesheets=[
-                dbc.themes.BOOTSTRAP])
+                dbc.themes.BOOTSTRAP], server=server)
 APP.layout = html.Div(children=[NAVBAR, BODY])
 
 """
@@ -488,11 +463,8 @@ def update_wordcloud_plot(value_drop):
     print("draw workcloud")
     local_df = pd.read_csv("comment_csv/{}.csv".format(value_drop), header=None)
     wordcloud, frequency_figure, treemap = plotly_wordcloud(local_df)
-    # print(local_df.head())
     print("redrawing bank-wordcloud...done")
     return (wordcloud, frequency_figure, treemap)
 
-application = APP.server
-
 if __name__ == "__main__":
-    application.run(debug=False, port=8080)
+    APP.run_server(debug=True)

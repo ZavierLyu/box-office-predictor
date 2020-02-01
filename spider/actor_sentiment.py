@@ -8,6 +8,7 @@ import os
 import csv
 from textblob import TextBlob
 import pandas as pd
+import datetime as dt
 
 # global constants that should never be modified at runtime.
 base_url = "https://twitter.com/i/search/timeline"
@@ -355,6 +356,10 @@ class TwitterCrawler:
 
 
 def main(input_path, output_path):
+    today = dt.datetime.today()
+    before = today - dt.timedelta(days=5)
+    today_iso = today.isoformat()
+    before_iso = today.isoformat()
 
     if not os.path.exists(output_path):
         os.makedirs(output_path)
@@ -366,7 +371,7 @@ def main(input_path, output_path):
     
     for i in range(len(df)):
         if year[i] != '':
-            query = "{} since:{}-12-01 until:{}-12-06".format(actor[i],2019,2019)
+            query = "{} since:{} until:{}".format(actor[i], before_iso, today_iso)
             try:
                 print("processing {}:{}".format(i,actor[i].encode("utf8").decode("utf8")))
             except UnicodeError:
