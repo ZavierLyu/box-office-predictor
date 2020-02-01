@@ -1,23 +1,15 @@
 # Box Office Predictor
 A project of box office predictor for EIE3280 in CUHKSZ.
 
-## Reference
 
-- [Prediction of Movie Success using Sentiment
-Analysis of Tweets](http://www.jscse.com/papers/vol3.no3/vol3.no3.46.pdf)
-
-- [Dynamic Box Office Forecasting Based on Microblog Data](https://www.jstor.org/stable/pdf/24899494.pdf?refreqid=excelsior%3Aa3a89bc298c2c0a9c141ce4b02f3cead)
 
 ## Baseline Structure 
 
 ![structure](./assets/eie3280.png)
 
-## Predictor
-Here we wanna train a predictor to predict the box office by using the data in the following:
-
-Total BO | Director Average | Main Role i Average  | Sentiment Index | Movie Type
-:-: | :-: | :-: | :-: | :-: 
-int | int | int | float | vector |
+## Report
+Here is the report of this project where you can find more details.
+[Box Office Predictor Project](report\Group5_report.pdf)
 
 ### NLP tools
 - [Awesome Chinese NLP](https://github.com/crownpku/Awesome-Chinese-NLP)
@@ -26,7 +18,8 @@ int | int | int | float | vector |
 ## Plotly Dash Application
 Here we wanna build a dash application for the visualization of the predictions.
 
-## Steps to execute
+### Steps to execute
+Steps to run in local:
 ```shell
 # Enter the directory
 cd box-office-predictor
@@ -37,20 +30,29 @@ pipenv install
 # Enter the virtual environment
 pipenv shell
 # Open the jupyter book
-jupyter notebook
+python application.py
 ```
-### How to install new pacakge?
+### How to deploy on AWS?
+We use AWS Elastic Beanstalk service to deploy the web application. We recommend [Elastic Beanstalk CLI](https://docs.amazonaws.cn/elasticbeanstalk/latest/dg/eb-cli3-install.html). 
+
+Steps to deploy:
 ```shell
-pipenv install <package>
+eb init -p python-3.6 box-office-predictor #Initialize the repository
+eb init # Set the configurations
+...
+eb create box-office-predictor-env # Deploy the web, upload whole application files
+eb open # Open the web on browser
 ```
 
 ## Materials
 - [Dash Tutorial](https://pythonprogramming.net/data-visualization-application-dash-python-tutorial-introduction/)
 - [Dash Official Doc](https://dash.plot.ly/)
-- [Python Machine Learning GitHub Repository](https://github.com/ageron/handson-ml)
+- [Python Machine Learning Materials](https://github.com/ageron/handson-ml)
 - [Social Sentiment](https://github.com/Sentdex/socialsentiment)
 
-## TODO
-- [ ] Predict the box office in real time
-- [ ] Train new model using new dataset.
-- [ ] Add director sentiment codes.
+## Reference
+
+- [Prediction of Movie Success using Sentiment
+Analysis of Tweets](http://www.jscse.com/papers/vol3.no3/vol3.no3.46.pdf)
+
+- [Dynamic Box Office Forecasting Based on Microblog Data](https://www.jstor.org/stable/pdf/24899494.pdf?refreqid=excelsior%3Aa3a89bc298c2c0a9c141ce4b02f3cead)
